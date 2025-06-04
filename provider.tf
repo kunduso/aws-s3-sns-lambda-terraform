@@ -1,3 +1,4 @@
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 terraform {
   required_providers {
     aws = {
