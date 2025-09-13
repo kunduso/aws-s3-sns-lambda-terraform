@@ -22,7 +22,20 @@ data "aws_iam_policy_document" "encrypt_cloudwatch" {
   statement {
     sid       = "Enable IAM User Permissions"
     effect    = "Allow"
-    actions   = ["kms:*"]
+    actions = [
+      "kms:Create*",
+      "kms:Describe*",
+      "kms:Enable*",
+      "kms:List*",
+      "kms:Put*",
+      "kms:Update*",
+      "kms:Revoke*",
+      "kms:Disable*",
+      "kms:Get*",
+      "kms:Delete*",
+      "kms:ScheduleKeyDeletion",
+      "kms:CancelKeyDeletion"
+    ]
     resources = ["arn:aws:kms:${var.region}:${data.aws_caller_identity.current.account_id}:key/*"]
     principals {
       type        = "AWS"
