@@ -20,8 +20,8 @@ resource "aws_kms_alias" "encrypt_cloudwatch" {
 #https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
 data "aws_iam_policy_document" "encrypt_cloudwatch" {
   statement {
-    sid       = "Enable IAM User Permissions"
-    effect    = "Allow"
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
     actions = [
       "kms:Create*",
       "kms:Describe*",
