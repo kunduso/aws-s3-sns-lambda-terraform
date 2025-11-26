@@ -3,7 +3,6 @@ resource "aws_kms_key" "sns_key" {
   description             = "KMS key for SNS topic encryption"
   deletion_window_in_days = 7
   enable_key_rotation     = true
-  policy                  = data.aws_iam_policy_document.sns_key_policy.json
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias
@@ -12,19 +11,14 @@ resource "aws_kms_alias" "sns_key_alias" {
   target_key_id = aws_kms_key.sns_key.key_id
 }
 
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key_policy
+resource "aws_kms_key_policy" "sns_key" {
+  key_id = aws_kms_key.sns_key.id
+  policy = data.aws_iam_policy_document.sns_key_policy.json
+}
+
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
 data "aws_iam_policy_document" "sns_key_policy" {
-  statement {
-    sid       = "Enable IAM User Permissions"
-    effect    = "Allow"
-    actions   = ["kms:*"]
-    resources = ["*"]
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-    }
-  }
-
   statement {
     sid    = "Allow SNS to use the key"
     effect = "Allow"
@@ -35,7 +29,7 @@ data "aws_iam_policy_document" "sns_key_policy" {
       "kms:GenerateDataKey*",
       "kms:DescribeKey"
     ]
-    resources = ["*"]
+    resources = [aws_kms_key.sns_key.arn]
     principals {
       type        = "Service"
       identifiers = ["sns.amazonaws.com"]
@@ -49,7 +43,7 @@ data "aws_iam_policy_document" "sns_key_policy" {
       "kms:GenerateDataKey*",
       "kms:Decrypt"
     ]
-    resources = ["*"]
+    resources = [aws_kms_key.sns_key.arn]
     principals {
       type        = "Service"
       identifiers = ["s3.amazonaws.com"]
@@ -62,7 +56,7 @@ data "aws_iam_policy_document" "sns_key_policy" {
     actions = [
       "kms:Decrypt"
     ]
-    resources = ["*"]
+    resources = [aws_kms_key.sns_key.arn]
     principals {
       type        = "AWS"
       identifiers = [aws_iam_role.lambda_role.arn]
