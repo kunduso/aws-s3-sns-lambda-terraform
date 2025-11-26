@@ -3,7 +3,12 @@ resource "aws_cloudwatch_log_group" "lambda_log" {
   name              = "${var.log_group_prefix}${var.name}"
   retention_in_days = var.log_retention_days
   kms_key_id        = aws_kms_key.encrypt_cloudwatch.arn
-  depends_on        = [aws_kms_key_policy.encrypt_cloudwatch]
+  depends_on = [
+    aws_kms_key_policy.encrypt_cloudwatch,
+    aws_kms_key_policy.lambda_key,
+    aws_kms_key_policy.s3_key,
+    aws_kms_key_policy.sns_key
+  ]
 }
 #https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key
 resource "aws_kms_key" "encrypt_cloudwatch" {

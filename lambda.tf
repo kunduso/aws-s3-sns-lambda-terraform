@@ -27,6 +27,11 @@ resource "aws_lambda_function" "lambda" {
   #checkov:skip=CKV_AWS_117: Lambda function is not configured inside a VPC - not required for this simple use case
   #checkov:skip=CKV_AWS_116: Dead Letter Queue not required for this simple notification processing function
   #checkov:skip=CKV_AWS_272: Code signing not required for this simple function
+
+  depends_on = [
+    aws_kms_key_policy.lambda_key,
+    aws_kms_key_policy.encrypt_cloudwatch
+  ]
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/archive_file
