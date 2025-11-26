@@ -3,7 +3,7 @@ resource "aws_s3_bucket" "bucket" {
   bucket        = "${var.name}-bucket"
   force_destroy = true
   #checkov:skip=CKV_AWS_18: Access logging not required for this demo bucket
-#checkov:skip=CKV_AWS_144: Cross-region replication not required for this demo bucket
+  #checkov:skip=CKV_AWS_144: Cross-region replication not required for this demo bucket
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning
